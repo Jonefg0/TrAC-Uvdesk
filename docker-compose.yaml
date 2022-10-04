@@ -1,0 +1,25 @@
+version: '3'
+services:
+    uvdesk:
+        image: uvdesk_testrepo:latest
+        tty: true
+        depends_on:
+            - db
+        ports:
+            - 9000:80
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: uvdesk_db
+            MYSQL_USER: uvdeskUser
+            MYSQL_PASSWORD: uvdeskPass
+        ports:
+            - "9906:3306"
+        volumes:
+            - "db_data:/var/lib/mysql"
+volumes:
+    uvdesk_data:
+        driver: local
+    db_data:
+        driver: local
