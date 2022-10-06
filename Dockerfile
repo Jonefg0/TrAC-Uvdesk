@@ -80,7 +80,7 @@ WORKDIR /var/www/uvdesk
 RUN composer self-update
 RUN composer install
 RUN composer update
-RUN php bin/console d:s:u --force
+#RUN php bin/console d:s:u --force
 # Change working directory to uvdesk source
 WORKDIR /var/www
 
