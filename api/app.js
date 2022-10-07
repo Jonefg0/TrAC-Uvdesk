@@ -28,6 +28,7 @@ app.use(
 );
 
 app.post("/verifyCustomer", function (req, res) {
+  console.log("se llama el endpoint")
 
   var email = req.body.email;
   var name = req.body.name;
@@ -38,7 +39,7 @@ app.post("/verifyCustomer", function (req, res) {
   connection.query(query, (err, results) => {
     if (err) throw err;
     if (results.length > 0) {
-      res.json("true");
+      res.json("usuario existe");
     } else {
       const maxIdValueQuery = "SELECT max(id) FROM uv_user";
       connection.query(maxIdValueQuery, function (err, result) {
@@ -56,7 +57,7 @@ app.post("/verifyCustomer", function (req, res) {
                 if (err) {
                   throw err;
                 } else {
-                  res.json("true");
+                  res.json({ success: "200" });
                 }
               });
             }
