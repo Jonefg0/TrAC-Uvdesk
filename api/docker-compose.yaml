@@ -1,0 +1,7 @@
+version: '3'
+services:
+    uvdeskapi:
+        image: uvdeskapi:latest
+        tty: true
+        ports:
+            - 8001:8001

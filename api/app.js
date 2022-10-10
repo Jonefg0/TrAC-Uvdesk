@@ -2,9 +2,8 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const dotenv = require('dotenv');
-dotenv.config()
-
+const dotenv = require("dotenv");
+dotenv.config();
 
 const PORT = process.env.APP_PORT || 3306;
 
@@ -28,7 +27,7 @@ app.use(
 );
 
 app.post("/verifyCustomer", function (req, res) {
-  console.log("se llama el endpoint")
+  console.log("se llama el endpoint");
 
   var email = req.body.email;
   var name = req.body.name;
@@ -41,18 +40,19 @@ app.post("/verifyCustomer", function (req, res) {
     if (results.length > 0) {
       res.json("usuario existe");
     } else {
-      const maxIdValueQuery = "SELECT max(id) FROM uv_user";
-      connection.query(maxIdValueQuery, function (err, result) {
+      const createUserQuery = `INSERT INTO uv_user (email,proxy_id,password,first_name,last_name,is_enabled,verification_code,timezone,timeformat) VALUES ('${email}',null,'${password}','${name}','${lastName}',1,null,null,null)`;
+      connection.query(createUserQuery, (err, results) => {
         if (err) {
           throw err;
         } else {
-          const maxIdValue = (JSON.parse(JSON.stringify(result))[0]["max(id)"] + 1);
-          const createUserQuery = `INSERT INTO uv_user (email,proxy_id,password,first_name,last_name,is_enabled,verification_code,timezone,timeformat) VALUES ('${email}',null,'${password}','${name}','${lastName}',1,null,null,null)`;
-          const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '2')`;
-          connection.query(createUserQuery, (err, results) => {
+          const maxIdValueQuery = "SELECT max(id) FROM uv_user";
+          connection.query(maxIdValueQuery, function (err, result) {
             if (err) {
               throw err;
             } else {
+              const maxIdValue =
+                JSON.parse(JSON.stringify(result))[0]["max(id)"] + 1;
+              const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '2')`;
               connection.query(createUserInstance, (err, results) => {
                 if (err) {
                   throw err;
@@ -64,11 +64,9 @@ app.post("/verifyCustomer", function (req, res) {
           });
         }
       });
-
     }
   });
 });
-
 
 connection.connect((error) => {
   if (error) throw error;
