@@ -52,7 +52,7 @@ app.post("/verifyCustomer", function (req, res) {
             } else {
               const maxIdValue =
                 JSON.parse(JSON.stringify(result))[0]["max(id)"] + 1;
-              const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '2')`;
+              const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '4')`;
               connection.query(createUserInstance, (err, results) => {
                 if (err) {
                   throw err;
