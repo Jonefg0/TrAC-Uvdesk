@@ -59,13 +59,13 @@ app.post("/verifyCustomer", function (req, res) {
         if (err) {
           throw err;
         } else {
-          const maxIdValueQuery = "SELECT max(id) FROM uv_user";
+          const maxIdValueQuery = `SELECT id FROM uv_user where email='${email}'`;
           pool.query(maxIdValueQuery, function (err, result) {
             if (err) {
               throw err;
             } else {
               const maxIdValue =
-                JSON.parse(JSON.stringify(result))[0]["max(id)"] + 1;
+                JSON.parse(JSON.stringify(result))[0]["id"];
               const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '4')`;
               pool.query(createUserInstance, (err, results) => {
                 if (err) {
