@@ -3,6 +3,20 @@ const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+
+var pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+})
+pool.getConnection((err,connection)=> {
+  if(err)
+  throw err;
+  console.log('Database connected successfully');
+  connection.release();
+});
 dotenv.config();
 
 const PORT = process.env.APP_PORT || 3306;
@@ -11,13 +25,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-var connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
+// var connection = mysql.createConnection({
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_NAME,
+//   port: process.env.DB_PORT,
+// });
 
 //Route
 app.use(
@@ -35,25 +49,25 @@ app.post("/verifyCustomer", function (req, res) {
   const password = process.env.CUSTOMERS_TOKEN;
 
   const query = `SELECT * FROM uv_user where email = '${email}'`;
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) throw err;
     if (results.length > 0) {
       res.json("usuario existe");
     } else {
       const createUserQuery = `INSERT INTO uv_user (email,proxy_id,password,first_name,last_name,is_enabled,verification_code,timezone,timeformat) VALUES ('${email}',null,'${password}','${name}','${lastName}',1,null,null,null)`;
-      connection.query(createUserQuery, (err, results) => {
+      pool.query(createUserQuery, (err, results) => {
         if (err) {
           throw err;
         } else {
           const maxIdValueQuery = "SELECT max(id) FROM uv_user";
-          connection.query(maxIdValueQuery, function (err, result) {
+          pool.query(maxIdValueQuery, function (err, result) {
             if (err) {
               throw err;
             } else {
               const maxIdValue =
                 JSON.parse(JSON.stringify(result))[0]["max(id)"] + 1;
               const createUserInstance = `INSERT INTO uv_user_instance (user_id, source, created_at, updated_at, is_active, is_verified, is_starred, supportRole_id) VALUES ( '${maxIdValue}', 'website', '2022-10-06 20:23:57', '2022-10-06 21:32:13', '1', '1', '0', '4')`;
-              connection.query(createUserInstance, (err, results) => {
+              pool.query(createUserInstance, (err, results) => {
                 if (err) {
                   throw err;
                 } else {
@@ -68,9 +82,9 @@ app.post("/verifyCustomer", function (req, res) {
   });
 });
 
-connection.connect((error) => {
-  if (error) throw error;
-  console.log("Database server running successfully!");
-});
+// connection.connect((error) => {
+//   if (error) throw error;
+//   console.log("Database server running successfully!");
+// });
 
 app.listen(PORT, () => console.log("Server listening on port " + PORT));
