@@ -9,11 +9,17 @@ services:
         ports:
             - 9001:80
         volumes:
-            - "./uvdesk/data/mail/swiftmailer.yaml:/var/www/uvdesk/config/packages/swiftmailer.yaml"
-            - "./uvdesk/data/mail/uvdesk_mail.yaml:/var/www/uvdesk/config/packages/uvdesk_mail.yaml"
-            - "./uvdesk/data/mail/uvdesk.yaml:/var/www/uvdesk/config/packages/uvdesk.yaml"
-            - "./uvdesk/data/mail/uvdesk_mailbox.yaml:/var/www/uvdesk/config/packages/uvdesk_mailbox.yaml"
+            - "./uvdesk/data/config/mail/swiftmailer.yaml:/var/www/uvdesk/config/packages/swiftmailer.yaml"
+            - "./uvdesk/data/config/mail/uvdesk_mail.yaml:/var/www/uvdesk/config/packages/uvdesk_mail.yaml"
+            - "./uvdesk/data/config/mail/uvdesk.yaml:/var/www/uvdesk/config/packages/uvdesk.yaml"
+            - "./uvdesk/data/config/mail/uvdesk_mailbox.yaml:/var/www/uvdesk/config/packages/uvdesk_mailbox.yaml"
+            - "./uvdesk/data/config/web_profiler.yaml:/var/www/uvdesk/config/packages/web_profiler.yaml"
             - "./uvdesk/data/visual/poweredby/dashboard.html.twig:/var/www/uvdesk/vendor/uvdesk/core-framework/Resources/views/dashboard.html.twig"
+            - "./uvdesk/data/visual/poweredby/footer.html.twig:/var/www/uvdesk/vendor/uvdesk/support-center-bundle/Resources/views/Templates/footer.html.twig"
+            - "./uvdesk/data/visual/poweredby/error.html.twig:/var/www/uvdesk/templates/errors/error.html.twig"
+            - "./uvdesk/data/visual/customer/customerAccount.html.twig:/var/www/uvdesk/vendor/uvdesk/support-center-bundle/Resources/views/Knowledgebase/customerAccount.html.twig"
+            - "./uvdesk/data/visual/knowledge/header.html.twig:/var/www/uvdesk/vendor/uvdesk/support-center-bundle/Resources/views/Templates/header.html.twig"
+
 
     db:
         image: mysql:5.7
