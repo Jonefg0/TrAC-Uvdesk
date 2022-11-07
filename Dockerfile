@@ -88,16 +88,12 @@ RUN chmod 777 -R /var/www/uvdesk/config
 RUN chmod 777 -R /var/www/uvdesk/var
 RUN chmod 777 -R /var/www/uvdesk/public
 
-RUN apt-get update && apt-get install vim
+#RUN apt-get update && apt-get install vim
 
 RUN a2enmod headers
 RUN service apache2 restart
 
-
-
-
 #RUN apt-get -y install nano
-
 
 #allow headers
 #a2enmod headers

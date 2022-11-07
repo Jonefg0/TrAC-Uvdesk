@@ -1,12 +1,20 @@
 version: '3'
 services:
     uvdesk:
-        image: uvdesk1:latest
+        #image: trac-uvdesk_uvdesk:latest
+        build: .
         tty: true
         depends_on:
             - db
         ports:
-            - 9000:80
+            - 9001:80
+        volumes:
+            - "./uvdesk/data/mail/swiftmailer.yaml:/var/www/uvdesk/config/packages/swiftmailer.yaml"
+            - "./uvdesk/data/mail/uvdesk_mail.yaml:/var/www/uvdesk/config/packages/uvdesk_mail.yaml"
+            - "./uvdesk/data/mail/uvdesk.yaml:/var/www/uvdesk/config/packages/uvdesk.yaml"
+            - "./uvdesk/data/mail/uvdesk_mailbox.yaml:/var/www/uvdesk/config/packages/uvdesk_mailbox.yaml"
+            - "./uvdesk/data/visual/poweredby/dashboard.html.twig:/var/www/uvdesk/vendor/uvdesk/core-framework/Resources/views/dashboard.html.twig"
+
     db:
         image: mysql:5.7
         environment:
@@ -16,3 +24,6 @@ services:
             MYSQL_PASSWORD: uvdeskPass
         ports:
             - "9906:3306"
+        volumes:
+            - "./mysql/data:/var/lib/mysql"
+

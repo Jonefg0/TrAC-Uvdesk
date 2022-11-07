@@ -1,0 +1,10 @@
+swiftmailer:
+    default_mailer: mailer_8214
+    mailers:
+        mailer_8214:
+            transport: gmail
+            username: soportetracfid@gmail.com
+            password: ZHlncHhkYm10Y25oamVxbQ==
+            # sender_address: ~
+            # delivery_addresses: ~
+            disable_delivery: false
