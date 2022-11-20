@@ -29,9 +29,12 @@ RUN apt-get update && apt-get -y upgrade \
 		apt-get install -y --no-install-recommends gnupg-curl; \
 	fi;
 
+RUN a2enmod ssl && a2enmod rewrite
+RUN mkdir -p /etc/apache2/ssl
 COPY ./.docker/config/apache2/env /etc/apache2/envvars
 COPY ./.docker/config/apache2/httpd.conf /etc/apache2/apache2.conf
-COPY ./.docker/config/apache2/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY ./.docker/config/ssl/ /etc/apache2/ssl/
+COPY ./.docker/config/apache2/vhost.conf /etc/apache2/sites-available/uvdesk.puentesdigitales.cl.conf
 COPY ./.docker/bash/uvdesk-entrypoint.sh /usr/local/bin/
 COPY . /var/www/uvdesk/
 
@@ -87,10 +90,19 @@ WORKDIR /var/www
 RUN chmod 777 -R /var/www/uvdesk/config
 RUN chmod 777 -R /var/www/uvdesk/var
 RUN chmod 777 -R /var/www/uvdesk/public
+RUN chmod 777 -R /var/www/uvdesk/.env
 
-#RUN apt-get update && apt-get install vim
+RUN apt-get update && apt-get install vim -y
+RUN add-apt-repository ppa:certbot/certbot
+
 
 RUN a2enmod headers
+RUN service apache2 restart
+RUN apt-get update
+RUN apt install python-certbot-apache -y
+RUN apt install ufw -y
+
+RUN a2ensite uvdesk.puentesdigitales.cl.conf
 RUN service apache2 restart
 
 #RUN apt-get -y install nano
