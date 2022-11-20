@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+dotenv.config();
 
 var pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -17,7 +18,7 @@ pool.getConnection((err,connection)=> {
   console.log('Database connected successfully');
   connection.release();
 });
-dotenv.config();
+
 
 const PORT = process.env.APP_PORT || 3306;
 
