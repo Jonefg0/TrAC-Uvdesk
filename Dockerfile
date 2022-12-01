@@ -15,13 +15,13 @@ RUN apt-get update && apt-get -y upgrade \
         unzip \
         apache2 \
         mysql-server \
-        php8.0 \
-        libapache2-mod-php8.0 \
-        php8.0-common \
-        php8.0-xml \
-        php8.0-imap \
-        php8.0-mysql \
-        php8.0-mailparse \
+        php \
+        libapache2-mod-php \
+        php-common \
+        php-xml \
+        php-imap \
+        php-mysql \
+        php-mailparse \
         ca-certificates; \
     if ! command -v gpg; then \
 		apt-get install -y --no-install-recommends gnupg2 dirmngr; \
@@ -29,18 +29,18 @@ RUN apt-get update && apt-get -y upgrade \
 		apt-get install -y --no-install-recommends gnupg-curl; \
 	fi;
 
-RUN a2enmod ssl && a2enmod rewrite
-RUN mkdir -p /etc/apache2/ssl
+#RUN a2enmod ssl && a2enmod rewrite
+#RUN mkdir -p /etc/apache2/ssl
 COPY ./.docker/config/apache2/env /etc/apache2/envvars
 COPY ./.docker/config/apache2/httpd.conf /etc/apache2/apache2.conf
-COPY ./.docker/config/ssl/ /etc/apache2/ssl/
-COPY ./.docker/config/apache2/vhost.conf /etc/apache2/sites-available/uvdesk.puentesdigitales.cl.conf
+#COPY ./.docker/config/apache2/vhost.conf /etc/apache2/sites-available/uvdesk.puentesdigitales.cl.conf
+COPY ./.docker/config/apache2/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY ./.docker/bash/uvdesk-entrypoint.sh /usr/local/bin/
 COPY . /var/www/uvdesk/
 
 RUN \
     # Update apache configurations
-    a2enmod php8.0 rewrite; \
+    a2enmod php rewrite; \
     chmod +x /usr/local/bin/uvdesk-entrypoint.sh; \
     # Install gosu for stepping-down from root to a non-privileged user during container startup
     dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -93,23 +93,14 @@ RUN chmod 777 -R /var/www/uvdesk/public
 RUN chmod 777 -R /var/www/uvdesk/.env
 
 RUN apt-get update && apt-get install vim -y
-RUN add-apt-repository ppa:certbot/certbot
-
-
+#RUN add-apt-repository ppa:certbot/certbot
+RUN apt-get install php-curl -y
 RUN a2enmod headers
 RUN service apache2 restart
-RUN apt-get update
-RUN apt install python-certbot-apache -y
-RUN apt install ufw -y
-
-RUN a2ensite uvdesk.puentesdigitales.cl.conf
-RUN service apache2 restart
-
-#RUN apt-get -y install nano
-
-#allow headers
-#a2enmod headers
-#service apache2 restart
+#RUN apt install python-certbot-apache -y
+#RUN apt install ufw -y
+#RUN a2ensite uvdesk.puentesdigitales.cl.conf
+#RUN service apache2 restart
 
 ENTRYPOINT ["uvdesk-entrypoint.sh"]
 CMD ["/bin/bash"]
